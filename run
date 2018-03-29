@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+
+import re
+import sys
+
+delta = {}
+accepted = []
+for line in sys.stdin:
+    s = str(line.strip())
+    d = s.split()
+    length = len(d)
+    match1 = re.search(r'#', s)
+
+    if not match1:
+        if length > 1:
+            pair = (d[0], d[2])
+            if pair in delta:
+                print("NONDETERMINISTIC")
+            else:
+                delta[pair] = d[1]
+        else:
+            accepted.append(d[0])
+
+file = open(sys.argv[1], 'r')
+
+for row in file:
+    text = row.strip()
+    v = '0'
+    for char in text:
+        k1 = v
+        k2 = char
+        pair = (k1, k2)
+        if pair in delta:
+            v = delta[pair]
+        else:
+            v=-1
+            break
+    if v in accepted:
+        print("YES " + text)
+    else:
+        print("NO " + text)
+
+file.close()
